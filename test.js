@@ -10,15 +10,10 @@ function Book(title, author, pages, read) {
     }
 }
 
-const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false)
-const harryPotter1 = new Book("Harry Potter and the Philosopher's Stone", "J.K. Rowling", 223, true)
-const harryPotter2 = new Book("Harry Potter and the Chamber of Secrets", "J.K. Rowling", 251, true)
+// const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false)
 
-// console.log(theHobbit.title)
-// console.log(harryPotter1.info())
-// console.log(harryPotter2.info())
 
-let myLibrary = [theHobbit, harryPotter1, harryPotter2];
+let myLibrary = [];
 
 function createBook (item) {
     const gridContainer = document.querySelector(".grid-container")
@@ -31,6 +26,62 @@ function createBook (item) {
 
     gridContainer.appendChild(bookCard)
     bookCard.classList.add('book-card')
+    bookCard.appendChild(titleAuthorContainer)
+    titleAuthorContainer.classList.add('title-author-container')
+    titleAuthorContainer.appendChild(bookTitle)
+    bookTitle.classList.add('book-title')
+    bookTitle.innerHTML = item.title
+    titleAuthorContainer.appendChild(bookAuthor)
+    bookAuthor.classList.add('book-author')
+    bookAuthor.innerHTML = 'by ' + item.author
+    bookCard.appendChild(pages)
+    bookTitle.classList.add('pages')
+    pages.innerHTML = item.pages + ' pages'
+    bookCard.appendChild(readStatus)
+    bookTitle.classList.add('read-status')
+    if (item.readStatus == true) {
+        readStatus.innerHTML = 'Has been read'
+    } else {
+        readStatus.innerHTML = "Hasn't been read"
+    }
 }
 
+const modal = document.getElementById('myModal')
+const addBookButton = document.getElementById('add-book-button')
+const closeSpan = document.getElementsByClassName('close')[0];
+const addBookFormButton = document.getElementById('submit-button')
+const addBookForm = document.getElementById('add-book-form')
 
+let formTitle = document.getElementById('title').value
+let formAuthor = document.getElementById('author').value
+let formPages = document.getElementById('pages').vaue
+let formReadStatus = document.getElementById('read-status').value
+
+addBookButton.onclick = function() {
+    modal.style.display = 'block'
+}
+
+closeSpan.onclick = function() {
+    modal.style.display = 'none'
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+}
+
+addBookFormButton.onclick = function() {
+    let newBook = new Book(formTitle, formAuthor, formPages, formReadStatus)
+    myLibrary.push(newBook);
+    for (let i = 0; i < myLibrary.length; i++) {
+        let book = myLibrary[i];
+        createBook(book);
+    }
+    modal.style.display = "none";
+}
+
+for (let i = 0; i < myLibrary.length; i++) {
+    const book = myLibrary[i];
+    createBook(book);
+}

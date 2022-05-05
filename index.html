@@ -11,17 +11,33 @@
 <body>
     <header>
         <h1 class="header-title">My Library</h1>
-        <button class="add-book-button">Add Book</button>
+        <button id="add-book-button">Add Book</button>
     </header>
-    <div class="grid-container">
-        <div class="book-card">
-            <div class="title-author-container">
-                <h3 class="book-title">Sample Title</h3>
-                <h6 class="book-author">by Sample Author</h6>
-            </div>
-            <p class="pages">293 pages</p>
-            <p class="read-status">Has been read</p>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="form-header">Add a Book</h2>
+            <form autocomplete="off" id="add-book-form">
+                <div>
+                    <label for="title">Title:</label>
+                    <input type="text" class="string-input" id="title" name="title"><br>
+                </div>
+                <div>
+                    <label for="author">Author:</label>
+                    <input type="text" class="string-input" id="author" name="author"><br>
+                </div>
+                <div>
+                    <label for="pages">Pages:</label>
+                    <input type="number" class="string-input" id="pages" name="pages" min="1"><br>
+                </div>
+                <div>
+                    <label for="read-status">Has this been read?</label>
+                    <input type="checkbox" name="read-status" id="read-status">
+                </div>
+                <button type="submit" id="submit-button">Add</button>
+            </form>
         </div>
     </div>
+    <div class="grid-container"></div>
 </body>
 </html>
