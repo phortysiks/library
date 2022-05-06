@@ -3,59 +3,18 @@ function Book(title, author, pages, read) {
     this.author = author
     this.pages = pages
     this.read = read
-    if (read == false) {
-        read = "not read yet"
-    } else {
-        read = "has been read"
-    }
 }
 
-// const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false)
+const theHobbit = new Book("The Hobbit and lots of other things and fluff", "J.R.R. Tolkien", 295, true)
 
+let myLibrary = [theHobbit];
+showBooks();
 
-let myLibrary = [];
-
-function createBook (item) {
-    const gridContainer = document.querySelector(".grid-container")
-    const bookCard = document.createElement('div');
-    const titleAuthorContainer = document.createElement('div')
-    const bookTitle = document.createElement('h3')
-    const bookAuthor = document.createElement('h6')
-    const pages = document.createElement('p')
-    const readStatus = document.createElement('p')
-
-    gridContainer.appendChild(bookCard)
-    bookCard.classList.add('book-card')
-    bookCard.appendChild(titleAuthorContainer)
-    titleAuthorContainer.classList.add('title-author-container')
-    titleAuthorContainer.appendChild(bookTitle)
-    bookTitle.classList.add('book-title')
-    bookTitle.innerHTML = item.title
-    titleAuthorContainer.appendChild(bookAuthor)
-    bookAuthor.classList.add('book-author')
-    bookAuthor.innerHTML = 'by ' + item.author
-    bookCard.appendChild(pages)
-    bookTitle.classList.add('pages')
-    pages.innerHTML = item.pages + ' pages'
-    bookCard.appendChild(readStatus)
-    bookTitle.classList.add('read-status')
-    if (item.readStatus == true) {
-        readStatus.innerHTML = 'Has been read'
-    } else {
-        readStatus.innerHTML = "Hasn't been read"
-    }
-}
-
-const modal = document.getElementById('myModal')
-const addBookButton = document.getElementById('add-book-button')
+const modal = document.getElementById('myModal');
+const addBookButton = document.getElementById('add-book-button');
 const closeSpan = document.getElementsByClassName('close')[0];
-const addBookFormButton = document.getElementById('submit-button')
-const addBookForm = document.getElementById('add-book-form')
+document.getElementById('submit-button').addEventListener('click', addBook);
 
-let formTitle = document.getElementById('title').value
-let formAuthor = document.getElementById('author').value
-let formPages = document.getElementById('pages').vaue
-let formReadStatus = document.getElementById('read-status').value
 
 addBookButton.onclick = function() {
     modal.style.display = 'block'
@@ -71,17 +30,95 @@ window.onclick = function(event) {
     }
 }
 
-addBookFormButton.onclick = function() {
-    let newBook = new Book(formTitle, formAuthor, formPages, formReadStatus)
-    myLibrary.push(newBook);
-    for (let i = 0; i < myLibrary.length; i++) {
-        let book = myLibrary[i];
-        createBook(book);
+function bookFromInput() {
+    let formTitle = document.getElementById('title').value;
+    let formAuthor = document.getElementById('author').value;
+    let formPages = parseInt(document.getElementById('pages').value);
+    let formReadStatus = document.getElementById('read-status');
+    if (formReadStatus.checked == false) {
+        formReadStatus = false;
+    } else {
+        formReadStatus = true;
     }
+    return new Book(formTitle, formAuthor, formPages, formReadStatus);
+}
+
+function addBook(book) {
+    let newBook =  bookFromInput(book);
+    myLibrary.push(newBook);
+    clearFields();
+    resetView();
+    showBooks();
     modal.style.display = "none";
 }
 
-for (let i = 0; i < myLibrary.length; i++) {
-    const book = myLibrary[i];
-    createBook(book);
+
+
+function renderBook (item) {
+    const gridContainer = document.querySelector(".grid-container");
+    const bookCard = document.createElement('div');
+    const titleAuthorContainer = document.createElement('div');
+    const bookTitle = document.createElement('h3');
+    const bookAuthor = document.createElement('h6');
+    const stats = document.createElement('div');
+    const pages = document.createElement('p');
+    const readStatus = document.createElement('p');
+    const actions = document.createElement('div');
+    const deleteButton = document.createElement('button');
+    const toggleReadButton = document.createElement('button')
+
+    gridContainer.appendChild(bookCard);
+    bookCard.classList.add('book-card');
+    bookCard.appendChild(titleAuthorContainer);
+    titleAuthorContainer.classList.add('title-author-container');
+    titleAuthorContainer.appendChild(bookTitle);
+    bookTitle.classList.add('book-title');
+    bookTitle.innerHTML = item.title;
+    titleAuthorContainer.appendChild(bookAuthor);
+    bookAuthor.classList.add('book-author');
+    bookAuthor.innerHTML = 'by ' + item.author;
+    bookCard.appendChild(stats);
+    stats.classList.add('stats');
+    stats.appendChild(pages);
+    pages.innerHTML = item.pages + ' pages';
+    stats.appendChild(readStatus);
+    if (item.read == true) {
+        readStatus.innerHTML = 'Read';
+        toggleReadButton.innerHTML = 'Mark Unread'
+    } else {
+        readStatus.innerHTML = "Unread";
+        toggleReadButton.innerHTML = 'Mark Read'
+    };
+    bookCard.appendChild(actions);
+    actions.classList.add('actions');
+    actions.appendChild(deleteButton);
+    deleteButton.classList.add('action-btn');
+    deleteButton.classList.add('delete');
+    deleteButton.type = 'button';
+    deleteButton.innerHTML = 'Delete';
+    actions.appendChild(toggleReadButton);
+    toggleReadButton.classList.add('action-btn');
+    toggleReadButton.classList.add('toggle-read');
+    toggleReadButton.type = 'button';
+}
+
+function showBooks() {
+    for (let i = 0; i < myLibrary.length; i++) {
+        const book = myLibrary[i];
+        renderBook(book);
+    }
+}
+
+function clearFields() {
+    document.getElementById('title').value = "";
+    document.getElementById('author').value = "";
+    document.getElementById('pages').value = "";
+    document.getElementById('read-status').checked = false;
+}
+
+function resetView() {
+    const gridContainer = document.querySelector(".grid-container");
+    while (gridContainer.lastChild) {
+        gridContainer.removeChild(gridContainer.lastChild);
+    }
 }
