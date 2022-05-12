@@ -5,16 +5,20 @@ function Book(title, author, pages, read) {
     this.read = read
 }
 
-const theHobbit = new Book("The Hobbit and lots of other things and fluff", "J.R.R. Tolkien", 295, true)
-
-let myLibrary = [theHobbit];
+let myLibrary = [];
 showBooks();
 
 const modal = document.getElementById('myModal');
 const addBookButton = document.getElementById('add-book-button');
 const closeSpan = document.getElementsByClassName('close')[0];
-document.getElementById('submit-button').addEventListener('click', addBook);
+document.getElementById('submit-button').addEventListener('click', checkValidity);
 
+function checkValidity() {
+    let form = document.getElementById('add-book-form');
+    if (form.reportValidity() == true) {
+        addBook();
+    }
+}
 
 addBookButton.onclick = function() {
     modal.style.display = 'block'
@@ -22,11 +26,13 @@ addBookButton.onclick = function() {
 
 closeSpan.onclick = function() {
     modal.style.display = 'none'
+    clearFields();
 }
 
 window.onclick = function(event) {
     if (event.target == modal) {
-      modal.style.display = "none";
+      modal.style.display = 'none';
+      clearFields();
     }
 }
 
@@ -52,9 +58,7 @@ function addBook(book) {
     modal.style.display = "none";
 }
 
-
-
-function renderBook (item) {
+function renderBook (item, dataIndex) {
     const gridContainer = document.querySelector(".grid-container");
     const bookCard = document.createElement('div');
     const titleAuthorContainer = document.createElement('div');
@@ -69,6 +73,7 @@ function renderBook (item) {
 
     gridContainer.appendChild(bookCard);
     bookCard.classList.add('book-card');
+    bookCard.setAttribute('data-index', dataIndex)
     bookCard.appendChild(titleAuthorContainer);
     titleAuthorContainer.classList.add('title-author-container');
     titleAuthorContainer.appendChild(bookTitle);
@@ -96,16 +101,21 @@ function renderBook (item) {
     deleteButton.classList.add('delete');
     deleteButton.type = 'button';
     deleteButton.innerHTML = 'Delete';
+    deleteButton.setAttribute('data-index', dataIndex);
+    deleteButton.setAttribute('onClick', 'removeBook(this)');
     actions.appendChild(toggleReadButton);
     toggleReadButton.classList.add('action-btn');
     toggleReadButton.classList.add('toggle-read');
     toggleReadButton.type = 'button';
+    toggleReadButton.setAttribute('data-index', dataIndex);
+    toggleReadButton.setAttribute('onClick', 'toggleReadStatus(this)');
 }
 
 function showBooks() {
     for (let i = 0; i < myLibrary.length; i++) {
         const book = myLibrary[i];
-        renderBook(book);
+        let dataIndex = i
+        renderBook(book, dataIndex);
     }
 }
 
@@ -121,4 +131,22 @@ function resetView() {
     while (gridContainer.lastChild) {
         gridContainer.removeChild(gridContainer.lastChild);
     }
+}
+
+function removeBook(e) {
+    let indexToRemove = e.getAttribute('data-index');
+    myLibrary.splice(indexToRemove, 1);
+    resetView();
+    showBooks();
+}
+
+function toggleReadStatus(e) {
+    let indexToToggle = e.getAttribute('data-index');
+    if (myLibrary[indexToToggle].read == true) {
+        myLibrary[indexToToggle].read = false
+    } else {
+        myLibrary[indexToToggle].read = true
+    }
+    resetView();
+    showBooks();
 }
